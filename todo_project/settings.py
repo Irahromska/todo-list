@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'todo'
 ]
 
 MIDDLEWARE = [
@@ -66,6 +67,9 @@ TEMPLATES = [
         },
     },
 ]
+
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 WSGI_APPLICATION = 'todo_project.wsgi.application'
 
