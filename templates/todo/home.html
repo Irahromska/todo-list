@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1 class="mb-4">Todo List</h1>
+    <a href="{% url 'todo:task-add' %}" class="btn btn-primary mb-3">Add Task</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Content</th>
+                <th>Created At</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Tags</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.content }}</td>
+                    <td>{{ task.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>{{ task.deadline|date:"Y-m-d H:i"|default:"No deadline" }}</td>
+                    <td>{{ task.is_done|yesno:"Done,Not Done" }}</td>
+                    <td>
+                        {% for tag in task.tags.all %}
+                            {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            No tags
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{% url 'todo:task-update' task.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{% url 'todo:task-delete' task.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        <form action="{% url 'todo:task-toggle' task.pk %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm {% if task.is_done %}btn-secondary{% else %}btn-success{% endif %}">
+                                {% if task.is_done %}Undo{% else %}Complete{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No tasks available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
